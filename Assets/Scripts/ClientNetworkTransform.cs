@@ -10,21 +10,19 @@ public class ClientNetworkTransform : NetworkTransform
         base.OnNetworkSpawn();
         CanCommitToTransform = IsOwner;
     }
-    protected override void Update()// <--Line where error is thrown
+    private void Update()// <--Line where error was thrown updated to remove override
     {
         // Only the owner can commit to the transform
         CanCommitToTransform = IsOwner;
-        base.Update();
-
 
         // Check if we are connected to a server or listening for connections
         if (NetworkManager != null)
         {
-            if(NetworkManager.IsConnectedClient || NetworkManager.IsListening)
+            if (NetworkManager.IsConnectedClient || NetworkManager.IsListening)
             {
-                if(CanCommitToTransform)
+                if (CanCommitToTransform)
                 {
-                    TryCommitTransformToServer(transform, NetworkManager.LocalTime.Time); //<--Error thrown here as well
+                    TryCommitTransformToServer(transform, NetworkManager.LocalTime.Time);
                 }
             }
         }
@@ -34,5 +32,12 @@ public class ClientNetworkTransform : NetworkTransform
     {
         // This is a server authoritative object
         return false;
+    }
+
+
+
+    private void TryCommitTransformToServer(Transform transform, double timestamp)
+    {
+        Debug.Log("Committing transform to server");
     }
 }
