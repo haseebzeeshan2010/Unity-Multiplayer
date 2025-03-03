@@ -1,43 +1,22 @@
-using UnityEngine;
 using Unity.Netcode.Components;
-using Unity.Netcode;
+using UnityEngine;
 
-public class ClientNetworkTransform : NetworkTransform
+namespace Unity.Multiplayer.Samples.Utilities.ClientAuthority
 {
-    public override void OnNetworkSpawn()
+    /// <summary>
+    /// Used for syncing a transform with client side changes. This includes host. Pure server as owner isn't supported by this. Please use NetworkTransform
+    /// for transforms that'll always be owned by the server.
+    /// </summary>
+    [DisallowMultipleComponent]
+    public class ClientNetworkTransform : NetworkTransform
     {
-        // Call the base method
-        base.OnNetworkSpawn();
-        CanCommitToTransform = IsOwner;
-    }
-    private void Update()// <--Line where error was thrown updated to remove override
-    {
-        // Only the owner can commit to the transform
-        CanCommitToTransform = IsOwner;
-
-        // Check if we are connected to a server or listening for connections
-        if (NetworkManager != null)
+        /// <summary>
+        /// Used to determine who can write to this transform. Owner client only.
+        /// This imposes state to the server. This is putting trust on your clients. Make sure no security-sensitive features use this transform.
+        /// </summary>
+        protected override bool OnIsServerAuthoritative()
         {
-            if (NetworkManager.IsConnectedClient || NetworkManager.IsListening)
-            {
-                if (CanCommitToTransform)
-                {
-                    TryCommitTransformToServer(transform, NetworkManager.LocalTime.Time);
-                }
-            }
+            return false;
         }
-    }
-
-    protected override bool OnIsServerAuthoritative()
-    {
-        // This is a server authoritative object
-        return false;
-    }
-
-
-
-    private void TryCommitTransformToServer(Transform transform, double timestamp)
-    {
-        Debug.Log("Committing transform to server");
     }
 }
