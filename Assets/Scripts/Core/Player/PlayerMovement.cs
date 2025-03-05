@@ -2,6 +2,7 @@ using UnityEngine;
 using Unity.Netcode;
 public class PlayerMovement : NetworkBehaviour
 {
+    //Serialized Fields used to reference the input reader, the body transform, and the rigidbody
     [Header("References")]
     [SerializeField] private InputReader inputReader;
     [SerializeField] private Transform bodyTransform;
