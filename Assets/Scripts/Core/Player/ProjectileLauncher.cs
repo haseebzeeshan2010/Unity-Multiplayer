@@ -23,50 +23,57 @@ public class ProjectileLauncher : NetworkBehaviour
     private float previousFireTime;
     private float muzzleFlashTimer;
 
+    //OnNetworkSpawn and OnNetworkDespawn are called when the object is spawned or despawned on the network
     public override void OnNetworkSpawn()
     {
         if (!IsOwner) { return; }
 
-        inputReader.PrimaryFireEvent += HandlePrimaryFire;
+        inputReader.PrimaryFireEvent += SetShouldFire;
     }
 
     public override void OnNetworkDespawn()
     {
         if (!IsOwner) { return; }
 
-        inputReader.PrimaryFireEvent -= HandlePrimaryFire;
+        inputReader.PrimaryFireEvent -= SetShouldFire;
     }
+
+
+    // The Update method is called every frame. This method updates the muzzle flash timer and checks if the player can fire a projectile.
 
     private void Update()
     {
-        if (muzzleFlashTimer > 0f)
+        if (!IsOwner) { return; }
+
+        if (muzzleFlashTimer > 0)
         {
             muzzleFlashTimer -= Time.deltaTime;
 
-            if (muzzleFlashTimer <= 0f)
+            if (muzzleFlashTimer <= 0)
             {
                 muzzleFlash.SetActive(false);
             }
         }
 
-        if (!IsOwner) { return; }
-
         if (!shouldFire) { return; }
 
-        if (Time.time < 1 / fireRate + previousFireTime) { return; }
-
-
-        PrimaryFireServerRpc(projectileSpawnPoint.position, projectileSpawnPoint.up);
+        if (Time.time < previousFireTime + 1 / fireRate) { return; }
 
         SpawnDummyProjectile(projectileSpawnPoint.position, projectileSpawnPoint.up);
+
+        PrimaryFireServerRpc(projectileSpawnPoint.position, projectileSpawnPoint.up);
 
         previousFireTime = Time.time;
     }
 
-    private void HandlePrimaryFire(bool shouldFire)
+    // The SetShouldFire method is called when the player presses the primary fire button. This method sets the shouldFire variable to true.
+
+    private void SetShouldFire(bool shouldFire)
     {
         this.shouldFire = shouldFire;
     }
+
+    // The PrimaryFireServerRpc method is called when the player fires a projectile. This method instantiates a server projectile and sets its velocity.
 
     [ServerRpc]
     private void PrimaryFireServerRpc(Vector3 spawnPos, Vector3 direction)
@@ -80,20 +87,23 @@ public class ProjectileLauncher : NetworkBehaviour
 
         Physics2D.IgnoreCollision(playerCollider, projectileInstance.GetComponent<Collider2D>());
 
-        if(projectileInstance.TryGetComponent<Rigidbody2D>(out Rigidbody2D rb)){
+        if (projectileInstance.TryGetComponent<Rigidbody2D>(out Rigidbody2D rb)){
             rb.linearVelocity = rb.transform.up * projectileSpeed;
         }
 
         SpawnDummyProjectileClientRpc(spawnPos, direction);
     }
 
+    // The SpawnDummyProjectileClientRpc method is called when the player fires a projectile. This method instantiates a client projectile and sets its velocity.
+
     [ClientRpc]
     private void SpawnDummyProjectileClientRpc(Vector3 spawnPos, Vector3 direction)
     {
-        if (IsOwner) { return; }
 
         SpawnDummyProjectile(spawnPos, direction);
     }
+
+    // The SpawnDummyProjectile method is called when the player fires a projectile. This method instantiates a client projectile and sets its velocity.
 
     private void SpawnDummyProjectile(Vector3 spawnPos, Vector3 direction)
     {
