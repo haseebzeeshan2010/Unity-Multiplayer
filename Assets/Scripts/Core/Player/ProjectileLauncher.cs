@@ -55,6 +55,7 @@ public class ProjectileLauncher : NetworkBehaviour
 
         if (Time.time < 1 / fireRate + previousFireTime) { return; }
 
+
         PrimaryFireServerRpc(projectileSpawnPoint.position, projectileSpawnPoint.up);
 
         SpawnDummyProjectile(projectileSpawnPoint.position, projectileSpawnPoint.up);
