@@ -871,6 +871,8 @@ MonoBehaviour:
   projectileSpeed: 30
   fireRate: 0.75
   muzzleFlashDuration: 0.075
+  costToFire: 5
+  wallet: {fileID: 1148501446427367141}
 --- !u!114 &4726779603693339579
 MonoBehaviour:
   m_ObjectHideFlags: 0
