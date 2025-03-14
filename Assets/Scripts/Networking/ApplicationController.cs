@@ -1,14 +1,18 @@
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class NewMonoBehaviourScript : MonoBehaviour
 {
-    private void Start()
+    [SerializeField] private ClientSingleton clientPrefab;
+
+    [SerializeField] private HostSingleton hostPrefab;
+    private async void Start()
     {
         DontDestroyOnLoad(gameObject);
-        LaunchInMode(SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null);
+        await LaunchInMode(SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null);
     }
 
-    private void LaunchInMode(bool isDedicatedServer)
+    private async Task LaunchInMode(bool isDedicatedServer)
     {
         if (isDedicatedServer)
         {
@@ -16,7 +20,16 @@ public class NewMonoBehaviourScript : MonoBehaviour
         }
         else
         {
-            // Start the client
+            ClientSingleton clientSingleton = Instantiate(clientPrefab);
+            bool authenticated = await clientSingleton.CreateClient();
+
+            HostSingleton hostSingleton = Instantiate(hostPrefab);
+            hostSingleton.CreateHost();
+
+            if(authenticated)
+            {
+                clientSingleton.GameManager.GoToMenu();
+            }
         }
     }
 

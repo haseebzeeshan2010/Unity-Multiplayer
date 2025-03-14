@@ -1,20 +1,20 @@
 using UnityEngine;
-
+using System.Threading.Tasks;
 public class ClientSingleton : MonoBehaviour
 {
     private static ClientSingleton instance;
 
-    private ClientGameManager gameManager;
+    public ClientGameManager GameManager {get; private set;}
     public static ClientSingleton Instance
     {
         get
         {
             if (instance != null) { return instance; }
-            
-            instance = FindObjectOfType<ClientSingleton>();
+
+            instance = FindAnyObjectByType<ClientSingleton>();
             if (instance == null)
             {
-                Deubg.LogError("No ClientSingleton found in the scene. Please add one.");
+                Debug.LogError("No ClientSingleton found in the scene. Please add one.");
                 return null;
             }
 
@@ -23,14 +23,14 @@ public class ClientSingleton : MonoBehaviour
     }
     private void Start()
     {
-        Don'tDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(gameObject);
     }
 
-    public async Task CreateClient()
+    public async Task<bool> CreateClient()
     {
-        gameManager = new ClientGameManager();
+        GameManager = new ClientGameManager();
 
-        await gameManager.InitAsync();
+        return await GameManager.InitAsync();
     }
 
 }
