@@ -1545,7 +1545,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1096235970}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2045028059}
+        m_TargetAssemblyTypeName: LobbiesList, Assembly-CSharp
+        m_MethodName: RefreshList
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1096235970
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2797,6 +2809,7 @@ GameObject:
   - component: {fileID: 2045028056}
   - component: {fileID: 2045028058}
   - component: {fileID: 2045028057}
+  - component: {fileID: 2045028059}
   m_Layer: 0
   m_Name: LobbiesBackground
   m_TagString: Untagged
@@ -2865,6 +2878,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2045028055}
   m_CullTransparentMesh: 1
+--- !u!114 &2045028059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2045028055}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08d05a4eac30c284eb2af92b54ff11b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lobbyItemParent: {fileID: 1659765612}
+  lobbyItemPrefab: {fileID: 4334919296519409358, guid: e229880ecd937674da607c657a2d888f, type: 3}
 --- !u!1 &2064787834
 GameObject:
   m_ObjectHideFlags: 0
