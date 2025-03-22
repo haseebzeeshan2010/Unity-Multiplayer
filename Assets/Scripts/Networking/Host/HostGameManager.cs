@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
+using System.Text;
 
 
 public class HostGameManager
@@ -20,6 +21,8 @@ public class HostGameManager
     private string joinCode;
 
     private string lobbyId;
+
+    private NetworkServer networkServer;
 
     private const int MaxConnections = 20;
     private const string GameSceneName = "Game";
@@ -46,6 +49,7 @@ public class HostGameManager
             Debug.Log(e);
             return;
         }
+        
 
         UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
 
@@ -64,8 +68,10 @@ public class HostGameManager
                     )
                 }
             };
+
+            string playerName = PlayerPrefs.GetString(NameSelector.PlayerNameKey, "Unknown");
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(
-                "MyLobby", MaxConnections, lobbyOptions);
+                $"{playerName}'s Lobby", MaxConnections, lobbyOptions);
 
             lobbyId = lobby.Id;
 
@@ -76,6 +82,20 @@ public class HostGameManager
             Debug.Log(e);
             return;
         }
+
+        networkServer = new NetworkServer(NetworkManager.Singleton);
+
+        UserData userData = new UserData
+        {
+            username = PlayerPrefs.GetString(NameSelector.PlayerNameKey, "Missing Name")
+        };
+        
+        string payload = JsonUtility.ToJson(userData); // Converts the UserData object into a JSON string.
+        byte[] payloadBytes = System.Text.Encoding.UTF8.GetBytes(payload); // Encodes the JSON string into a UTF-8 encoded byte array.
+
+        NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes; // Sets the connection data to the byte array.
+
+
 
         NetworkManager.Singleton.StartHost();
 
