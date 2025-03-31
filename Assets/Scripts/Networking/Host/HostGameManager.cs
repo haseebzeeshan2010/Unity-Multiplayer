@@ -12,6 +12,7 @@ using UnityEngine.SceneManagement;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using System.Text;
+using Unity.Services.Authentication;
 
 
 public class HostGameManager
@@ -88,6 +89,7 @@ public class HostGameManager
         UserData userData = new UserData
         {
             username = PlayerPrefs.GetString(NameSelector.PlayerNameKey, "Missing Name")
+            userAuthId = AuthenticationService.Instance.PlayerId // This is the ID of the user in the authentication system.
         };
         
         string payload = JsonUtility.ToJson(userData); // Converts the UserData object into a JSON string.

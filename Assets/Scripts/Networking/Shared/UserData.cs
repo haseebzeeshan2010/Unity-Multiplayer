@@ -5,4 +5,5 @@ using System;
 public class UserData
 {
     public string username;
+    public string userAuthId; // This is the ID of the user in the authentication system.
 }

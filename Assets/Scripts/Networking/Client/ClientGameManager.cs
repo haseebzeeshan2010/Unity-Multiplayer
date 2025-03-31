@@ -11,6 +11,7 @@ using Unity.Services.Relay.Models;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Text;
+using Unity.Services.Authentication
 
 
 public class ClientGameManager
@@ -57,6 +58,7 @@ public class ClientGameManager
         UserData userData = new UserData
         {
             username = PlayerPrefs.GetString(NameSelector.PlayerNameKey, "Missing Name")
+            userAuthId = AuthenticationService.Instance.PlayerId // This is the ID of the user in the authentication system.
         };
         
         string payload = JsonUtility.ToJson(userData); // Converts the UserData object into a JSON string.
