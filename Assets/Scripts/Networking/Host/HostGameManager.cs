@@ -88,7 +88,7 @@ public class HostGameManager
 
         UserData userData = new UserData
         {
-            username = PlayerPrefs.GetString(NameSelector.PlayerNameKey, "Missing Name")
+            username = PlayerPrefs.GetString(NameSelector.PlayerNameKey, "Missing Name"),
             userAuthId = AuthenticationService.Instance.PlayerId // This is the ID of the user in the authentication system.
         };
         

@@ -1,14 +1,17 @@
 using UnityEngine;
 using Unity.Netcode;
 using System;
+using System.Collections.Generic;
+using System.Collections;
 
 public class NetworkServer
 {
 
     private NetworkManager networkManager;
 
-    private Dictionary<ulong, string> clientIdToAuth = new Dictionary<ulong, string>(); // Maps client IDs to their authentication IDs.
-    private Dictionary<string, UserData> authIdToUserData = new Dictionary<string, UserData>(); // Maps client IDs to their usernames.
+    private Dictionary<ulong, string> clientIdToAuth = new Dictionary<ulong, string>();
+    private Dictionary<string, UserData> authIdToUserData = new Dictionary<string, UserData>();
+
     public NetworkServer(NetworkManager networkManager)
     {
         this.networkManager = networkManager;
