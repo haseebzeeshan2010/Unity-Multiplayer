@@ -14,7 +14,7 @@ using System.Text;
 using Unity.Services.Authentication;
 
 
-public class ClientGameManager
+public class ClientGameManager : IDisposable
 {
     private JoinAllocation allocation;
 
@@ -71,5 +71,10 @@ public class ClientGameManager
         NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes; // Sets the connection data to the byte array.
 
         NetworkManager.Singleton.StartClient();
+    }
+
+    public void Dispose()
+    {
+        networkClient?.Dispose(); // Dispose of the network client if it exists.
     }
 }

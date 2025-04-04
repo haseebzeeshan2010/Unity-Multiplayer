@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections;
 
-public class NetworkServer
+public class NetworkServer : IDisposable
 {
 
     private NetworkManager networkManager;
@@ -48,6 +48,21 @@ public class NetworkServer
         {
             clientIdToAuth.Remove(clientId); // Removes the client ID from the dictionary.
             authIdToUserData.Remove(authId); // Removes the authentication ID from the dictionary.
+        }
+    }
+
+    public void Dispose()
+    {
+
+        if (networkManager == null) { return; } // Checks if the network manager is null.
+
+        networkManager.ConnectionApprovalCallback -= ApprovalCheck; // Unsubscribes from the connection approval callback.
+        networkManager.OnServerStarted -= OnNetworkReady; // Unsubscribes from the server started callback.
+        networkManager.OnClientDisconnectCallback -= OnClientDisconnect; // Unsubscribes from the client disconnect callback.   
+
+        if (networkManager.IsListening) // Checks if the network manager is a server.
+        {
+            networkManager.Shutdown(); // Shuts down the network manager.
         }
     }
 
