@@ -40,6 +40,24 @@ public class NetworkServer : IDisposable
 
         networkManager.OnClientDisconnectCallback += OnClientDisconnect; // Invoked when a client disconnects.
 
+
+        
+        
+    }
+
+    public UserData GetUserDataByClientId(ulong clientId)
+    {
+        if (clientIdToAuth.TryGetValue(clientId, out string authId)) // Checks if the authentication ID exists in the dictionary.
+        {
+            if(authIdToUserData.TryGetValue(authId, out UserData data)) // Checks if the UserData object exists in the dictionary.
+            {
+                return data; // Returns the UserData object.
+            }
+
+            return null; // Returns null if the UserData object does not exist.
+        }
+
+        return null; // Returns null if the authentication ID does not exist.
     }
 
     private void OnClientDisconnect(ulong clientId)
