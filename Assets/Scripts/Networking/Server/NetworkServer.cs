@@ -32,6 +32,8 @@ public class NetworkServer : IDisposable
         authIdToUserData[userData.userAuthId] = userData; // Maps the authentication ID to the UserData object.
 
         response.Approved = true; // Approves the connection.
+        response.Position = SpawnPoint.GetRandomSpawnPos(); // Sets the spawn position for the player object.
+        response.Rotation = Quaternion.identity; // Sets the rotation for the player object.
         response.CreatePlayerObject = true; // Creates a player object for the connection.
     }
 
