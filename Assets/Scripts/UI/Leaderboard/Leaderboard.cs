@@ -1,11 +1,17 @@
-using UnityEngine;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
+using UnityEngine;
+
 public class Leaderboard : NetworkBehaviour
 {
     [SerializeField] private Transform laederboardEntityHolder;
     [SerializeField] private LeaderboardEntityDisplay leaderboardEntityPrefab;
 
     private NetworkList<LeaderboardEntityState> leaderboardEntities;
+    private List<LeaderboardEntityDisplay> entityDisplays = new List<LeaderboardEntityDisplay>();
 
     private void Awake()
     {
@@ -15,10 +21,10 @@ public class Leaderboard : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         if (IsClient){
-            leaderboardEntities.OnListChanged += HandleLeaderBoardEntityListChanged;
+            leaderboardEntities.OnListChanged += HandleLeaderboardEntitiesChanged;
             foreach(LeaderboardEntityState entity in leaderboardEntities)
             {
-                HandleLeaderBoardEntityListChanged(new NetworkListEvent<LeaderboardEntityState>
+                HandleLeaderboardEntitiesChanged(new NetworkListEvent<LeaderboardEntityState>
                 {
                     Type = NetworkListEvent<LeaderboardEntityState>.EventType.Add,
                     Value = entity
@@ -42,7 +48,7 @@ public class Leaderboard : NetworkBehaviour
     public override void OnNetworkDespawn()
     {
         if (IsClient){
-            leaderboardEntities.OnListChanged -= HandleLeaderBoardEntityListChanged;
+            leaderboardEntities.OnListChanged -= HandleLeaderboardEntitiesChanged;
         }
         if (IsServer) {
             TankPlayer.OnPlayerSpawned -= HandlePlayerSpawned;
@@ -50,12 +56,42 @@ public class Leaderboard : NetworkBehaviour
         }
     }
 
-    private void HandleLeaderBoardEntityListChanged(NetworkListEvent<LeaderboardEntityState> changeEvent)
+    private void HandleLeaderboardEntitiesChanged(NetworkListEvent<LeaderboardEntityState> changeEvent)
     {
         switch(changeEvent.Type)
         {
             case NetworkListEvent<LeaderboardEntityState>.EventType.Add:
-                Instantiate(leaderboardEntityPrefab, laederboardEntityHolder);
+                if(!entityDisplays.Any(x => x.ClientId == changeEvent.Value.ClientId))
+                {
+                    LeaderboardEntityDisplay leaderboardEntity = 
+                        Instantiate(leaderboardEntityPrefab, laederboardEntityHolder);
+                    leaderboardEntity.Initialise(
+                        changeEvent.Value.ClientId, 
+                        changeEvent.Value.PlayerName, 
+                        changeEvent.Value.Coins);
+
+                    entityDisplays.Add(leaderboardEntity);
+                }
+                break;
+
+            case NetworkListEvent<LeaderboardEntityState>.EventType.Remove:
+                LeaderboardEntityDisplay displayToRemove = 
+                    entityDisplays.FirstOrDefault(x => x.ClientId == changeEvent.Value.ClientId);
+                if(displayToRemove != null)
+                {
+                    displayToRemove.transform.SetParent(null);
+                    Destroy(displayToRemove.gameObject);
+                    entityDisplays.Remove(displayToRemove);
+                }
+                break;
+            
+            case NetworkListEvent<LeaderboardEntityState>.EventType.Value:
+                LeaderboardEntityDisplay displayToUpdate = 
+                    entityDisplays.FirstOrDefault(x => x.ClientId == changeEvent.Value.ClientId);
+                if(displayToUpdate != null)
+                {
+                    displayToUpdate.UpdateCoins(changeEvent.Value.Coins);
+                }
                 break;
             
         }
