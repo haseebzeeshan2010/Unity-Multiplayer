@@ -3698,7 +3698,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  laederboardEntityHolder: {fileID: 1563870896}
+  leaderboardEntityHolder: {fileID: 1563870896}
   leaderboardEntityPrefab: {fileID: 2102821338805753496, guid: cd192355fa7c3df40af3b22b3c7396d8, type: 3}
 --- !u!114 &1669511475
 MonoBehaviour:
