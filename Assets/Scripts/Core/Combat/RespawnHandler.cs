@@ -57,8 +57,10 @@ public class RespawnHandler : NetworkBehaviour
         TankPlayer playerInstance = Instantiate(
             playerPrefab, SpawnPoint.GetRandomSpawnPos(), Quaternion.identity);
         
-        playerInstance.Wallet.TotalCoins.Value += keptCoins;
+        
 
         playerInstance.NetworkObject.SpawnAsPlayerObject(ownerClientId);
+
+        playerInstance.Wallet.TotalCoins.Value += keptCoins;
     }
 }
