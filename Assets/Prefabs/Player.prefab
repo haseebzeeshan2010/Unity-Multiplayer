@@ -1151,6 +1151,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  health: {fileID: 4726779603693339579}
+  coinPrefab: {fileID: 2576152960995118026, guid: 4d00c892a2b6b8846a0700cfe012dba2, type: 3}
+  coinSpread: 3
+  bountyPercentage: 50
+  bountyCoinCount: 10
+  minBountyCoinValue: 5
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 1
   TotalCoins:
     m_InternalValue: 0
 --- !u!114 &3716427991822388063
