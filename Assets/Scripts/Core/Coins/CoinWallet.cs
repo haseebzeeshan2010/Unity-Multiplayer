@@ -74,7 +74,7 @@ public class CoinWallet : NetworkBehaviour
         while (true)
         {
             Vector2 spawnPoint = (Vector2)transform.position + UnityEngine.Random.insideUnitCircle * coinSpread;
-            int numColliders = Physics2D.OverlapCircleNonAlloc(spawnPoint, coinRadius, coinBuffer, layerMask);
+            int numColliders = Physics2D.OverlapCircleAll(spawnPoint, coinRadius, layerMask).Length;
             if (numColliders == 0)
             {
                 return spawnPoint;
