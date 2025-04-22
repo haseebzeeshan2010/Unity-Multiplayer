@@ -8,7 +8,7 @@ public class NetworkServer : IDisposable
 {
 
     private NetworkManager networkManager;
-
+    public Action<string> OnClientLeft; // Invoked when a client disconnects.
     private Dictionary<ulong, string> clientIdToAuth = new Dictionary<ulong, string>();
     private Dictionary<string, UserData> authIdToUserData = new Dictionary<string, UserData>();
 
@@ -41,10 +41,6 @@ public class NetworkServer : IDisposable
     {
 
         networkManager.OnClientDisconnectCallback += OnClientDisconnect; // Invoked when a client disconnects.
-
-
-        
-        
     }
 
     public UserData GetUserDataByClientId(ulong clientId)
@@ -68,6 +64,7 @@ public class NetworkServer : IDisposable
         {
             clientIdToAuth.Remove(clientId); // Removes the client ID from the dictionary.
             authIdToUserData.Remove(authId); // Removes the authentication ID from the dictionary.
+            OnClientLeft?.Invoke(authId);
         }
     }
 

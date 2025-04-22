@@ -1,10 +1,12 @@
-using UnityEngine;
-using Unity.Netcode;
-using UnityEngine.SceneManagement;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using Unity.Netcode;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
 public class NetworkClient : IDisposable
 {
-
     private NetworkManager networkManager;
 
     private const string MenuSceneName = "Menu";
@@ -13,34 +15,34 @@ public class NetworkClient : IDisposable
     {
         this.networkManager = networkManager;
 
-        networkManager.OnClientDisconnectCallback += OnClientDisconnect; // Run when a client disconnects.
-
+        networkManager.OnClientDisconnectCallback += OnClientDisconnect;
     }
 
     private void OnClientDisconnect(ulong clientId)
     {
-        if(clientId != 0 && clientId != networkManager.LocalClientId){ return; } // makes sure only client disconnects
+        if (clientId != 0 && clientId != networkManager.LocalClientId) { return; }
 
-        if(SceneManager.GetActiveScene().name != MenuSceneName) // Check if the current scene is not MainMenu
+        Disconnect();
+    }
+
+    public void Disconnect()
+    {
+        if (SceneManager.GetActiveScene().name != MenuSceneName)
         {
-            SceneManager.LoadScene(MenuSceneName); // Load the MainMenu scene
+            SceneManager.LoadScene(MenuSceneName);
         }
 
-        if (networkManager.IsConnectedClient) // Check if the client is still connected
+        if (networkManager.IsConnectedClient)
         {
-            networkManager.Shutdown(); // Shutdown the network manager
+            networkManager.Shutdown();
         }
-
     }
 
     public void Dispose()
     {
-        if(networkManager != null)
+        if (networkManager != null)
         {
-            networkManager.OnClientDisconnectCallback -= OnClientDisconnect; // Shutdown the network manager
+            networkManager.OnClientDisconnectCallback -= OnClientDisconnect;
         }
-
-
     }
-
 }
