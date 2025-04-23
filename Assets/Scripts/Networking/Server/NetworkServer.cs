@@ -7,11 +7,12 @@ using System.Collections;
 public class NetworkServer : IDisposable
 {
 
-    private NetworkManager networkManager;
+    private NetworkManager networkManager; // The network manager instance.
     public Action<string> OnClientLeft; // Invoked when a client disconnects.
-    private Dictionary<ulong, string> clientIdToAuth = new Dictionary<ulong, string>();
-    private Dictionary<string, UserData> authIdToUserData = new Dictionary<string, UserData>();
+    private Dictionary<ulong, string> clientIdToAuth = new Dictionary<ulong, string>(); // Maps client IDs to authentication IDs.
+    private Dictionary<string, UserData> authIdToUserData = new Dictionary<string, UserData>(); // Maps authentication IDs to UserData objects.
 
+    // Constructor that initializes the network manager and sets up the connection approval callback.
     public NetworkServer(NetworkManager networkManager)
     {
         this.networkManager = networkManager;
@@ -20,6 +21,7 @@ public class NetworkServer : IDisposable
         networkManager.OnServerStarted += OnNetworkReady; // Invoked when the server starts.
     }
 
+    // to approve the connection, we need to check if the user is authenticated and if they are allowed to connect to the server.
     private void ApprovalCheck(
         NetworkManager.ConnectionApprovalRequest request,
         NetworkManager.ConnectionApprovalResponse response)
@@ -37,6 +39,7 @@ public class NetworkServer : IDisposable
         response.CreatePlayerObject = true; // Creates a player object for the connection.
     }
 
+    // Invoked when the server is ready to accept connections.
     private void OnNetworkReady()
     {
 
